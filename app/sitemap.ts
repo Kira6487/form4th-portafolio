@@ -1,0 +1,2 @@
+import type { MetadataRoute } from "next";
+export default function sitemap(): MetadataRoute.Sitemap { const base = "https://form4th.com"; return ["", "/servicios", "/proyectos", "/proyectos/acm-diproyec", "/proyectos/estampado-djhonny", "/nosotros", "/contacto"].map(path => ({ url: `${base}${path}`, lastModified: new Date(), changeFrequency: "monthly" as const, priority: path === "" ? 1 : .8 })); }
