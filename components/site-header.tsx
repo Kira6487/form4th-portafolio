@@ -3,9 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { KeyboardButton } from "./keyboard/KeyboardButton";
+import { SoundToggle } from "./keyboard/SoundToggle";
 
-const links = [["Inicio", "/"], ["Servicios", "/servicios"], ["Proyectos", "/proyectos"], ["Contacto", "/contacto"]];
-const social = [["Instagram", "https://www.instagram.com/form4th"], ["Facebook", "https://www.facebook.com/form4th"], ["TikTok", "https://www.tiktok.com/@form4th"], ["Threads", "https://www.threads.com/@form4th"]];
+const links = [["Inicio", "/"], ["Servicios", "/servicios"], ["Proyectos", "/proyectos"], ["Contacto", "/contacto"]] as const;
+const social = [["Instagram", "https://www.instagram.com/form4th"], ["Facebook", "https://www.facebook.com/form4th"], ["TikTok", "https://www.tiktok.com/@form4th"], ["Threads", "https://www.threads.com/@form4th"]] as const;
+const quoteHref = "https://wa.me/51912227953";
 
 export function SiteHeader() {
   const path = usePathname(); const [open, setOpen] = useState(false);
@@ -14,14 +17,13 @@ export function SiteHeader() {
   return <>
     <header className={`header ${dark ? "header-dark" : ""}`}>
       <Link className="header-logo" href="/" aria-label="FORM4TH, inicio"><span className="header-mark">F4</span> FORM4TH</Link>
-      <nav className="nav" aria-label="Navegación principal">{links.map(([label, href]) => <Link key={href} href={href} aria-current={path === href || (href === "/proyectos" && path.startsWith("/proyectos/")) ? "page" : undefined}>{label}</Link>)}</nav>
-      <a className="header-cta key-button" href="https://wa.me/51912227953" target="_blank" rel="noopener noreferrer"><span className="keycap">F4</span> Cotiza tu proyecto</a>
-      <button className="menu-trigger" aria-label="Abrir menú" aria-expanded={open} onClick={() => setOpen(true)}><span /><span /></button>
+      <nav className="nav" aria-label="Navegación principal">{links.map(([label, href]) => <KeyboardButton key={href} variant="normal" className="nav-key" href={href} label={label} aria-current={path === href || (href === "/proyectos" && path.startsWith("/proyectos/")) ? "page" : undefined} />)}</nav>
+      <div className="header-actions"><SoundToggle /><KeyboardButton variant="space" className="header-cta" href={quoteHref} external label="Cotiza tu proyecto" /><KeyboardButton variant="normal" className="menu-trigger" aria-label="Abrir menú" aria-expanded={open} onPress={() => setOpen(true)}><span className="menu-lines"><i /><i /></span></KeyboardButton></div>
     </header>
     <div className={`menu-overlay ${open ? "open" : ""}`} role="dialog" aria-modal="true" aria-label="Menú FORM4TH" aria-hidden={!open}>
-      <button className="menu-close" aria-label="Cerrar menú" tabIndex={open ? 0 : -1} onClick={() => setOpen(false)}>×</button>
-      <nav className="mobile-nav" aria-label="Navegación móvil">{links.map(([label, href], i) => <Link key={href} href={href} tabIndex={open ? 0 : -1}><span className="orange">0{i + 1}</span> {label}</Link>)}</nav>
-      <div><a className="button button-orange key-button" tabIndex={open ? 0 : -1} href="https://wa.me/51912227953" target="_blank" rel="noopener noreferrer"><span className="keycap">F4</span> Cotiza tu proyecto</a><div className="mobile-social">{social.map(([label, href]) => <a key={label} href={href} target="_blank" rel="noopener noreferrer" tabIndex={open ? 0 : -1}>{label}</a>)}</div></div>
+      <KeyboardButton variant="normal" className="menu-close" label="CERRAR" tabIndex={open ? 0 : -1} onPress={() => setOpen(false)} />
+      <nav className="mobile-nav" aria-label="Navegación móvil">{links.map(([label, href], i) => <KeyboardButton key={href} variant="enter" className="mobile-nav-key" href={href} label={`${String(i + 1).padStart(2, "0")} / ${label}`} tabIndex={open ? 0 : -1} />)}</nav>
+      <div className="mobile-menu-bottom"><KeyboardButton variant="space" className="mobile-quote" href={quoteHref} external label="Cotiza tu proyecto" tabIndex={open ? 0 : -1} /><div className="mobile-social">{social.map(([label, href]) => <KeyboardButton key={label} variant="normal" className="mobile-social-key" href={href} external label={label} tabIndex={open ? 0 : -1} />)}<SoundToggle /></div></div>
     </div>
   </>;
 }

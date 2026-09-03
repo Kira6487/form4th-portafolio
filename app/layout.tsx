@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, DM_Mono } from "next/font/google";
 import "./globals.css";
+import "./keyboard.css";
 import { SiteHeader } from "@/components/site-header";
 import { Footer } from "@/components/footer";
+import { KeyboardAudioProvider } from "@/components/keyboard/KeyboardAudioProvider";
+import { Form4thIntro } from "@/components/intro/Form4thIntro";
 
 const space = Space_Grotesk({ subsets: ["latin"], variable: "--font-space" });
 const mono = DM_Mono({ subsets: ["latin"], weight: ["400", "500"], variable: "--font-mono" });
@@ -18,5 +21,5 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="es"><body className={`${space.variable} ${mono.variable}`}><SiteHeader />{children}<Footer /></body></html>;
+  return <html lang="es"><body className={`${space.variable} ${mono.variable}`}><KeyboardAudioProvider><SiteHeader />{children}<Footer /><Form4thIntro /></KeyboardAudioProvider></body></html>;
 }
