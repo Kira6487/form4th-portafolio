@@ -48,6 +48,8 @@
 .intro-f4 { position: relative; display: grid; place-items: center; width: clamp(180px, 26vw, 360px); aspect-ratio: 1.5; padding: 0; border: 0; background: transparent; cursor: pointer; transform: translateY(0) scale(1); transition: transform .16s cubic-bezier(.2,.8,.2,1), filter .2s ease; }
 .intro-f4::after { content: ""; position: absolute; inset: 18% 22%; border-radius: 50%; box-shadow: 0 0 80px color-mix(in srgb, var(--forth-orange) 18%, transparent); opacity: .5; z-index: -1; }
 .intro-f4 img { width: 100%; height: 100%; object-fit: fill; }
+.intro-f4:focus, .intro-f4:focus-visible { outline: none; }
+.intro-f4:focus-visible { filter: brightness(1.04) drop-shadow(0 0 12px color-mix(in srgb, var(--forth-orange) 24%, transparent)); }
 .intro-f4:hover { transform: translateY(-5px) scale(1.015); filter: brightness(1.05); }
 .intro-f4:active, .intro-gate--pressing .intro-f4 { transform: translateY(6px) scale(.965); }
 .intro-hint { position: absolute; inset: auto 0 36px; margin: 0; text-align: center; color: var(--system-gray); font: 11px var(--font-mono), monospace; letter-spacing: .1em; text-transform: uppercase; }

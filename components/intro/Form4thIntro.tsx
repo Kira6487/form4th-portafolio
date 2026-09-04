@@ -1,9 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useState } from "react";
-import { playKeyboardSound } from "../keyboard/audio-manager";
-import f4Key from "../../images/boton-f4-principal.png";
+import { KeyboardButton } from "../keyboard/KeyboardButton";
 
 type IntroState = "visible" | "pressing" | "exiting" | "skipped";
 const INTRO_STORAGE_KEY = "form4th-intro-seen";
@@ -29,7 +27,6 @@ export function Form4thIntro() {
 
   const pressF4 = () => {
     if (state !== "visible") return;
-    playKeyboardSound("general");
     setState("pressing");
     window.setTimeout(() => {
       try { window.sessionStorage.setItem(INTRO_STORAGE_KEY, "true"); } catch { /* no-op */ }
@@ -42,9 +39,7 @@ export function Form4thIntro() {
     <div className="intro-ambient intro-ambient--two" aria-hidden="true" />
     <div className="intro-grid" aria-hidden="true" />
     <div className="intro-copy"><span>FORM4TH / DIGITAL PRODUCT STUDIO</span><span>PRESS TO ENTER</span></div>
-    <button className="intro-f4" onClick={pressF4} aria-label="Presionar F4 para entrar" autoFocus>
-      <Image src={f4Key} alt="F4" priority sizes="clamp(180px, 26vw, 360px)" />
-    </button>
+    <KeyboardButton variant="f4" className="intro-f4" onPress={pressF4} aria-label="Presionar F4 para entrar" autoFocus />
     <p className="intro-hint">Enciende tu próxima experiencia</p>
   </div>;
 }

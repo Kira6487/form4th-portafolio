@@ -2,7 +2,7 @@
 
 import Image, { type StaticImageData } from "next/image";
 import Link from "next/link";
-import { useCallback, useRef, useState, type AnchorHTMLAttributes, type ButtonHTMLAttributes, type ReactNode } from "react";
+import { useCallback, useState, type AnchorHTMLAttributes, type ButtonHTMLAttributes, type ReactNode } from "react";
 import { playKeyboardSound, type KeyboardSound } from "./audio-manager";
 import normalKey from "../../images/tecla-normal.png";
 import enterKey from "../../images/boton-enter.png";
@@ -57,19 +57,11 @@ export function KeyboardButton({
   ...rest
 }: KeyboardButtonProps) {
   const [pressed, setPressed] = useState(false);
-  const soundHandled = useRef(false);
   const asset = assets[variant];
   const content = children ?? label;
 
-  const activateSound = useCallback(() => {
-    if (soundHandled.current) return;
-    soundHandled.current = true;
-    playKeyboardSound(sounds[variant]);
-  }, [variant]);
-
   const release = useCallback(() => {
     setPressed(false);
-    soundHandled.current = false;
   }, []);
 
   const common = {
@@ -78,7 +70,6 @@ export function KeyboardButton({
     "aria-label": rest["aria-label"] ?? (typeof content === "string" ? content : label),
     onPointerDown: (event: React.PointerEvent<HTMLButtonElement | HTMLAnchorElement>) => {
       setPressed(true);
-      activateSound();
       onPointerDown?.(event as never);
     },
     onPointerUp: (event: React.PointerEvent<HTMLButtonElement | HTMLAnchorElement>) => {
@@ -92,13 +83,14 @@ export function KeyboardButton({
     onKeyDown: (event: React.KeyboardEvent<HTMLButtonElement | HTMLAnchorElement>) => {
       if ((event.key === "Enter" || event.key === " ") && !event.repeat) {
         setPressed(true);
-        activateSound();
       }
       onKeyDown?.(event as never);
     },
     onKeyUp: release,
     onClick: (event: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
-      activateSound();
+      // Click is the single activation event for audio. Native keyboard
+      // activation and touch/pointer input both converge here once.
+      playKeyboardSound(sounds[variant]);
       onPress?.();
       onClick?.(event as never);
     },
