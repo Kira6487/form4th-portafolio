@@ -5,12 +5,11 @@ import Link from "next/link";
 import { useCallback, useState, type AnchorHTMLAttributes, type ButtonHTMLAttributes, type ReactNode } from "react";
 import { playKeyboardSound, type KeyboardSound } from "./audio-manager";
 import normalKey from "../../images/tecla-normal.png";
-import enterKey from "../../images/boton-enter-vacio.png";
 import spaceKey from "../../images/barra-grande.png";
 import f4Key from "../../images/boton-f4-principal.png";
 
-export type KeyboardVariant = "normal" | "enter" | "space" | "f4";
-export type KeyboardSize = "xs" | "sm" | "md" | "lg" | "xl";
+export type KeyboardVariant = "normal" | "space" | "f4";
+export type KeyboardSize = "xs" | "sm" | "md" | "lg";
 
 type CommonProps = {
   variant?: KeyboardVariant;
@@ -30,14 +29,12 @@ type KeyboardButtonProps = CommonProps &
 
 const assets: Record<KeyboardVariant, StaticImageData> = {
   normal: normalKey,
-  enter: enterKey,
   space: spaceKey,
   f4: f4Key,
 };
 
 const sounds: Record<KeyboardVariant, KeyboardSound> = {
   normal: "general",
-  enter: "enter",
   space: "space",
   f4: "general",
 };
