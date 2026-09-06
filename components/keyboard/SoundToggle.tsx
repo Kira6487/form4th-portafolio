@@ -19,6 +19,7 @@ export function SoundToggle() {
 
   return <KeyboardButton
     variant="normal"
+    size="sm"
     className="sound-toggle"
     label={enabled ? "SOUND ON" : "SOUND OFF"}
     aria-pressed={enabled}

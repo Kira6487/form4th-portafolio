@@ -5,14 +5,16 @@ import Link from "next/link";
 import { useCallback, useState, type AnchorHTMLAttributes, type ButtonHTMLAttributes, type ReactNode } from "react";
 import { playKeyboardSound, type KeyboardSound } from "./audio-manager";
 import normalKey from "../../images/tecla-normal.png";
-import enterKey from "../../images/boton-enter.png";
-import spaceKey from "../../images/barra-espacio.png";
+import enterKey from "../../images/boton-enter-vacio.png";
+import spaceKey from "../../images/barra-grande.png";
 import f4Key from "../../images/boton-f4-principal.png";
 
 export type KeyboardVariant = "normal" | "enter" | "space" | "f4";
+export type KeyboardSize = "xs" | "sm" | "md" | "lg" | "xl";
 
 type CommonProps = {
   variant?: KeyboardVariant;
+  size?: KeyboardSize;
   label?: string;
   children?: ReactNode;
   icon?: ReactNode;
@@ -42,6 +44,7 @@ const sounds: Record<KeyboardVariant, KeyboardSound> = {
 
 export function KeyboardButton({
   variant = "normal",
+  size = "md",
   label,
   children,
   icon,
@@ -52,8 +55,11 @@ export function KeyboardButton({
   onClick,
   onPointerDown,
   onPointerUp,
+  onPointerCancel,
   onPointerLeave,
+  onBlur,
   onKeyDown,
+  onKeyUp,
   ...rest
 }: KeyboardButtonProps) {
   const [pressed, setPressed] = useState(false);
@@ -66,7 +72,7 @@ export function KeyboardButton({
 
   const common = {
     ...rest,
-    className: `keyboard-button keyboard-button--${variant} ${pressed ? "is-pressed" : ""} ${className}`.trim(),
+    className: `keyboard-button keyboard-button--${variant} keyboard-button--size-${size ?? "md"} ${pressed ? "is-pressed" : ""} ${className}`.trim(),
     "aria-label": rest["aria-label"] ?? (typeof content === "string" ? content : label),
     onPointerDown: (event: React.PointerEvent<HTMLButtonElement | HTMLAnchorElement>) => {
       setPressed(true);
@@ -76,9 +82,17 @@ export function KeyboardButton({
       release();
       onPointerUp?.(event as never);
     },
+    onPointerCancel: (event: React.PointerEvent<HTMLButtonElement | HTMLAnchorElement>) => {
+      release();
+      onPointerCancel?.(event as never);
+    },
     onPointerLeave: (event: React.PointerEvent<HTMLButtonElement | HTMLAnchorElement>) => {
       release();
       onPointerLeave?.(event as never);
+    },
+    onBlur: (event: React.FocusEvent<HTMLButtonElement | HTMLAnchorElement>) => {
+      release();
+      onBlur?.(event as never);
     },
     onKeyDown: (event: React.KeyboardEvent<HTMLButtonElement | HTMLAnchorElement>) => {
       if ((event.key === "Enter" || event.key === " ") && !event.repeat) {
@@ -86,7 +100,10 @@ export function KeyboardButton({
       }
       onKeyDown?.(event as never);
     },
-    onKeyUp: release,
+    onKeyUp: (event: React.KeyboardEvent<HTMLButtonElement | HTMLAnchorElement>) => {
+      release();
+      onKeyUp?.(event as never);
+    },
     onClick: (event: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
       // Click is the single activation event for audio. Native keyboard
       // activation and touch/pointer input both converge here once.
@@ -97,7 +114,7 @@ export function KeyboardButton({
   };
 
   const visual = <>
-    <Image className="keyboard-button__image" src={asset} alt="" aria-hidden="true" sizes={variant === "space" ? "(max-width: 700px) 85vw, 360px" : "160px"} />
+    <Image fill className="keyboard-button__image" src={asset} alt="" aria-hidden="true" sizes={variant === "space" ? "(max-width: 700px) 88vw, 420px" : variant === "f4" ? "(max-width: 700px) 52vw, 360px" : "240px"} />
     <span className="keyboard-button__content">{icon}{content}</span>
   </>;
 
